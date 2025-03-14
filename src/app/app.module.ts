@@ -1,20 +1,12 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule, provideHttpClient} from '@angular/common/http';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { SearchComponent } from './search/search.component';
+import { SearchComponent } from './components/search/search.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    SearchComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+  imports: [SearchComponent, HttpClientModule],
+  // imports: [HttpClientModule], // ✅ Ensure it's in imports
+  bootstrap: []
 })
 export class AppModule { }
