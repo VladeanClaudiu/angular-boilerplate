@@ -2,9 +2,13 @@
   <h4>Shipping address</h4>
   <div class="search-bar">
     <input type="text" (keyup)="onKey($event)" placeholder="Enter address..." />
+    <div *ngIf="addresses.options.length > 0" class="testContainer">
+      <ul>
+        <li *ngFor="let option of addresses.options" (click)="selectAddress(option)">
+          {{ option.value }} {{option.suffix}}
+        </li>
+      </ul>
+    </div>
 
-    <!-- <ul *ngIf="addresses.length > 0">
-      <li *ngFor="let address of addresses">{{ address }}</li>
-    </ul> -->
   </div>
 </div>
