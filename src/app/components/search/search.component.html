@@ -1,7 +1,7 @@
 <div class="search_container">
   <h4>Shipping address</h4>
-  <div class="search-bar">
-    <input type="text" (keyup)="onKey($event)" placeholder="Enter address..." />
+  <div class="search_bar">
+    <input type="text" (keyup)="onKey($event)" placeholder="Enter postcode or address" />
     <div *ngIf="addresses.options.length > 0" class="testContainer">
       <ul>
         <li *ngFor="let option of addresses.options" (click)="selectAddress(option)">
