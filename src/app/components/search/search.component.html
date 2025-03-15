@@ -2,12 +2,13 @@
   <h4>Shipping address</h4>
   <div class="search_bar">
     <input type="text" (keyup)="onKey($event)" placeholder="Enter postcode or address" />
-    <div *ngIf="addresses.options.length > 0" class="testContainer">
-      <ul>
-        <li *ngFor="let option of addresses.options" (click)="selectAddress(option)">
-          {{ option.value }} {{option.suffix}}
-        </li>
-      </ul>
+    <div *ngIf="addresses.options.length > 0" class="dropdown_container">
+     
+      <div class="address_item" *ngFor="let option of addresses.options" (click)="selectAddress(option)">
+        <div class="address_value">{{ option.value }}</div>
+        <div class="drill_down" *ngIf="option.suffix">{{ '(' + option.suffix + ')' }}</div>
+      </div>
+
     </div>
 
   </div>

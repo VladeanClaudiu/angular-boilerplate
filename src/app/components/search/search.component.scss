@@ -13,6 +13,11 @@
   }
 
   .search_bar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+
     input {
       height: 50px;
       width: 398px;
@@ -26,6 +31,7 @@
       font-size: 16px;
       font-weight: 600;
       letter-spacing: 0px;
+      vertical-align: middle;
     }
 
     input::placeholder {
@@ -42,9 +48,44 @@
       background-position: 364px 14px;
     }
 
-    .testContainer {
-      height: 200px;
-      width: 100px;
+    .dropdown_container {
+      width: 390px;
+      height: 286px;
+      border-radius: 6px;
+      padding-bottom: 8px;
+      width: 378px;
+      background: #ffffff;
+      box-shadow: 0px 3px 8px 0px #00000026;
+      overflow-y: scroll;
+
+      .address_item {
+        font-size: 14px;
+        line-height: 24px;
+        letter-spacing: 0px;
+        height: fit-content;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        width: 390;
+        padding-top: 8px;
+        padding-right: 8px;
+        padding-bottom: 8px;
+        padding-left: 10px;
+        gap: 8px;
+        
+        
+        .address_value {
+          font-weight: 700;
+        }
+
+        .drill_down {
+          width: fit-content;
+          flex-shrink: 0;
+          font-weight: 400;
+          font-style: italic;
+          color: #3C4044;
+        }
+      }
     }
   }
 }

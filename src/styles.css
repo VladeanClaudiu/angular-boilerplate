@@ -4,3 +4,7 @@
     src: url('./assets/fonts/Open_Sans/OpenSans-VariableFont.ttf') format('truetype');
 
 }
+
+body{
+    background-color: #F8FAFC;
+}
