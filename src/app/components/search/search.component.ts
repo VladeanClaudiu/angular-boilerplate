@@ -60,22 +60,25 @@ export class SearchComponent {
 
   selectAddress(address: string) {
     console.log('Selected Address:', address);
+
   }
 
-  modifyAddressString(option: string): string {
+  modifyAddressString(option: string, highlights: [number, number]): string {
     if (!option?.trim()) return '';
-
-    const firstCommaIndex = option.indexOf(',');
-    if (firstCommaIndex === -1) {
-      //here's no comma, make the whole address bold
-      return `<span class="bold">${option}</span>`;
+  
+    const [start, end] = highlights;
+  
+    // if the highlight range is valid
+    if (start < 0 || end > option.length || start >= end) {
+      return option; // unchanged if range is invalid
     }
-
-    // split at first comma
-    const firstPart = option.substring(0, firstCommaIndex + 1); // include the first comma
-    const restPart = option.substring(firstCommaIndex + 2); // skip comma and space
-
-    return `<span class="bold">${firstPart}</span> ${restPart}`;
+  
+    // adding the bold span to the highlighted portion
+    const beforeHighlight = option.substring(0, start);
+    const highlightedPart = option.substring(start, end);
+    const afterHighlight = option.substring(end);
+  
+    return `${beforeHighlight}<span class="bold">${highlightedPart}</span>${afterHighlight}`;
   }
 
   closeDropdown() {

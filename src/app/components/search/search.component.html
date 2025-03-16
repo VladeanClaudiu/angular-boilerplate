@@ -14,7 +14,7 @@
       </div>
       <div class="address_item" *ngFor="let option of addresses.options" (click)="selectAddress(option)">
         <!-- <div class="address_value">{{ option.value }}</div> -->
-        <div class="address_value" [innerHTML]="modifyAddressString(option.value)"></div>
+        <div class="address_value" [innerHTML]="modifyAddressString(option.value, option.format.highlights)"></div>
         <div class="drill_down" *ngIf="option.suffix">{{ '(' + option.suffix + ')' }}</div>
       </div>
 
