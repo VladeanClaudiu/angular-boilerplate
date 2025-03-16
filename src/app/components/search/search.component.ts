@@ -58,9 +58,20 @@ export class SearchComponent {
     return this.http.get<any[]>(apiUrl);
   }
 
-  selectAddress(address: string) {
+  selectAddress(address: { link: { href: string } }) {
     console.log('Selected Address:', address);
-
+  
+    const apiUrl = address.link.href; //the API url from the address object
+  
+    this.http.get<any>(apiUrl).subscribe(
+      (data) => {
+        console.log('Data from selected address API call:', data);
+        this.addresses = data; // storing the result of the call
+      },
+      (error) => {
+        console.error('Error fetching selected address:', error); // erorr handle
+      }
+    );
   }
 
   modifyAddressString(option: string, highlights: [number, number]): string {
