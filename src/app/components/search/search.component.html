@@ -2,7 +2,7 @@
   <h4>Shipping address</h4>
   <div class="search_bar">
     <input type="text" (keyup)="onKey($event)" (focus)="openDropdown()" placeholder="Enter postcode or address" />
-    <div *ngIf="isDropdownOpen && addresses.options.length > 0" class="dropdown_container">
+    <div *ngIf="isDropdownOpen && addresses.options.length > 0 && searchLength.length > 0" class="dropdown_container">
 
       <div class="dropdown_header">
         <!-- headers for autocomplete -->

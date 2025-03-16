@@ -22,6 +22,7 @@ export class SearchComponent {
   //look into alternative here, perhaps a page that asks for a valid api key
   apiKey = 'pub_5e1fec7a-d035-4365-93da-f1700de10c8b';
   isDropdownOpen = false; //control dropdown visibility
+  searchLength: String = ""
 
   constructor(private http: HttpClient) {
     this.searchTerm
@@ -42,6 +43,7 @@ export class SearchComponent {
     console.log('key press');
     this.searchTerm.next(event.target.value); // value change event
     console.log(this.searchTerm);
+    this.searchLength = event.target.value
   }
 
   fetchAddresses(query: string) {
