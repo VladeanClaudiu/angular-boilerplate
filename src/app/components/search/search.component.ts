@@ -22,7 +22,8 @@ export class SearchComponent {
   //look into alternative here, perhaps a page that asks for a valid api key
   apiKey = 'pub_5e1fec7a-d035-4365-93da-f1700de10c8b';
   isDropdownOpen = false; //control dropdown visibility
-  searchLength: String = ""
+  isMouseDownOutside = false; //check is mouse down happend outisde
+  searchLength: String = '';
 
   constructor(private http: HttpClient) {
     this.searchTerm
@@ -43,7 +44,7 @@ export class SearchComponent {
     console.log('key press');
     this.searchTerm.next(event.target.value); // value change event
     console.log(this.searchTerm);
-    this.searchLength = event.target.value
+    this.searchLength = event.target.value;
   }
 
   fetchAddresses(query: string) {
@@ -81,22 +82,45 @@ export class SearchComponent {
     this.isDropdownOpen = false;
   }
 
-  openDropdown() {
-    this.isDropdownOpen = true;
-  }
-
   ngOnInit() {
-    document.addEventListener('click', this.handleOutsideClick.bind(this));
+    document.addEventListener('mousedown', this.handleMouseDown.bind(this));
+    document.addEventListener('mouseup', this.handleMouseUp.bind(this));
   }
 
   ngOnDestroy() {
-    document.removeEventListener('click', this.handleOutsideClick.bind(this));
+    document.removeEventListener('mousedown', this.handleMouseDown.bind(this));
+    document.removeEventListener('mouseup', this.handleMouseUp.bind(this));
   }
 
-  handleOutsideClick(event: Event) {
+  handleMouseDown(event: MouseEvent) {
     const target = event.target as HTMLElement;
-    if (!target.closest('.dropdown_container') && !target.closest('input')) {
-      this.isDropdownOpen = false;
+    const insideDropdown = target.closest('.dropdown_container');
+    const insideInput = target.closest('input');
+
+    // mousedown outside both input and dropdown
+    if (!insideDropdown && !insideInput) {
+      this.isMouseDownOutside = true;
     }
+  }
+
+  handleMouseUp(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    const inputElement = document.querySelector('input');
+
+    //both mousedown and mouseup happened outside, close dropdown & blur input
+    if (this.isMouseDownOutside) {
+      this.isDropdownOpen = false;
+
+      if (inputElement) {
+        (inputElement as HTMLInputElement).blur();
+      }
+    }
+
+    // reset variable
+    this.isMouseDownOutside = false;
+  }
+
+  openDropdown() {
+    this.isDropdownOpen = true;
   }
 }
