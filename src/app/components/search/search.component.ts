@@ -19,7 +19,9 @@ import {
 })
 export class SearchComponent {
   searchTerm = new Subject<string>();
+  searchText: string = '';
   addresses: any = [];
+  
   //look into alternative here, perhaps a page that asks for a valid api key
   apiKey = 'pub_5e1fec7a-d035-4365-93da-f1700de10c8b';
   isDropdownOpen = false; //control dropdown visibility
@@ -54,9 +56,53 @@ export class SearchComponent {
     });
   }
 
+  // checks if search is meant to render
+  get shouldShowSearch(): boolean {
+    console.log('this.addresses', this.addresses);
+    console.log(
+      'this.addresses',
+      this.addresses?.links?.some(
+        (link: { rel: string }) => link.rel === 'filter'
+      )
+    );
+
+    return (
+      (this.addresses?.type === 'drilldown' ||
+        this.addresses?.type === 'filter') &&
+      this.addresses?.links?.some(
+        (link: { rel: string }) => link.rel === 'filter'
+      )
+    );
+  }
+
+  onSearchInput(event: KeyboardEvent): void {
+    const filterText = (event.target as HTMLInputElement).value; // Get the current input value
+    const filterLink = this.addresses?.links?.find(
+      (link: { rel: string }) => link.rel === 'filter'
+    );
+
+    if (filterLink) {
+      const apiUrl = this.createApiUrl(filterLink.href, filterText); // Create the API URL
+
+      this.http.get<any>(apiUrl).subscribe(
+        (data) => {
+          console.log('Data from filter API call:', data);
+          this.addresses = data; // Store the filtered addresses
+        },
+        (error) => {
+          console.error('Error fetching filtered data:', error);
+        }
+      );
+    }
+  }
+
+  createApiUrl(href: string, filterText: string): string {
+    return href.replace('FILTER_TEXT', encodeURIComponent(filterText));
+  }
 
   onKey(event: any) {
-    this.searchTerm.next(event.target.value); // value change event
+    this.searchText = event.target.value;
+    this.searchTerm.next(this.searchText); // value change event
     this.searchLength = event.target.value;
   }
 
@@ -83,10 +129,15 @@ export class SearchComponent {
     this.http.get<any>(apiUrl).subscribe(
       (data) => {
         console.log('Data from selected address API call:', data);
+        if (data.type === 'lookup') {
+          console.log('lookup pressed');
+          this.searchText = ''; // clear input field
+          this.searchTerm.next(''); // reset Subject
+        }
         this.addresses = data; // storing the result of the call
       },
       (error) => {
-        // console.error('Error fetching selected address:', error); // erorr handle
+        console.error('Error fetching selected address:', error); // erorr handle
       }
     );
   }
@@ -122,21 +173,21 @@ export class SearchComponent {
 
     return `${beforeHighlight}<span class="bold">${highlightedPart}</span>${afterHighlight}`;
   }
-  
+
   //used by the back button when clicked addres is a drilldown
   back() {
     this.selectAddress(this.addresses?.options?.[0]);
-    this.searchQuery = ""
+    this.searchQuery = '';
   }
 
   openDropdown() {
     this.isDropdownOpen = true;
-    this.searchQuery = ""
+    this.searchQuery = '';
   }
 
   closeDropdown() {
     this.isDropdownOpen = false;
-    this.searchQuery = ""
+    this.searchQuery = '';
   }
 
   // mouse interaction fixes for usecases that may cause issues

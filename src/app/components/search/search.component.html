@@ -4,6 +4,7 @@
     <input
       class="search_bar_input"
       type="text"
+      [(ngModel)]="searchText"
       (keyup)="onKey($event)"
       (focus)="openDropdown()"
       placeholder="Enter postcode or address"
@@ -27,7 +28,12 @@
           <div class="header_close" (click)="closeDropdown()"></div>
         </div>
 
-        <div class="suggestions_header" *ngIf="addresses?.type === 'drilldown'">
+        <div
+          class="suggestions_header"
+          *ngIf="
+            addresses?.type === 'drilldown' || addresses?.type === 'filter'
+          "
+        >
           <div class="drilldown_header">
             <div (click)="back()" class="header_back"></div>
             <div class="header_text">
@@ -37,51 +43,40 @@
           <div class="header_close" (click)="closeDropdown()"></div>
         </div>
 
-        <!-- <div class="drilldown_search" *ngIf="addresses?.type === 'drilldown'">
-          <input class="drilldown_search_input" type="text" name="drilldown_search" id="drilldownSearch" placeholder="Filter by Apt, Suite, Unit, etc.">
+        <div class="drilldown_search" *ngIf="shouldShowSearch">
+          <input
+            class="drilldown_search_input"
+            type="text"
+            (keyup)="onSearchInput($event)"
+            placeholder="Filter by Apt, Suite, Unit, etc."
+          />
         </div>
 
-      </div>
-      <ng-container *ngFor="let option of addresses.options; let i = index">
-        <div
-          class="address_item"
-          *ngIf="!(addresses.type === 'drilldown' && i === 0)"
-          (click)="selectAddress(option)"
-        >
+        <!-- was of filteredOptions instead of addresses.options  for client sided filtering-->
+        <ng-container *ngFor="let option of addresses.options; let i = index">
           <div
-            class="address_value"
-            [innerHTML]="modifyAddressString(option.value, option.format.highlights)"
-          ></div>
-          <div class="drill_down" *ngIf="option.suffix">
-            {{ "(" + option.suffix + ")" }}
+            class="address_item"
+            *ngIf="
+              !(
+                (addresses.type === 'drilldown' ||
+                  addresses?.type === 'filter') &&
+                option.value.includes('<')
+              )
+            "
+            (click)="selectAddress(option)"
+          >
+            <div
+              class="address_value"
+              [innerHTML]="
+                modifyAddressString(option.value, option.format.highlights)
+              "
+            ></div>
+            <div class="drill_down" *ngIf="option.suffix">
+              {{ "(" + option.suffix + ")" }}
+            </div>
           </div>
-        </div>
-      </ng-container> -->
-
-      <div class="drilldown_search" *ngIf="addresses?.type === 'drilldown'">
-        <input
-          class="drilldown_search_input"
-          type="text"
-          [(ngModel)]="searchQuery"
-          placeholder="Filter by Apt, Suite, Unit, etc."
-        />
+        </ng-container>
       </div>
-      
-      <ng-container *ngFor="let option of filteredOptions; let i = index">
-        <div
-          class="address_item"
-          *ngIf="!(addresses.type === 'drilldown' && option.value.includes('<'))"
-          (click)="selectAddress(option)"
-        >
-          <div
-            class="address_value"
-            [innerHTML]="modifyAddressString(option.value, option.format.highlights)"
-          ></div>
-          <div class="drill_down" *ngIf="option.suffix">
-            {{ "(" + option.suffix + ")" }}
-          </div>
-        </div>
-      </ng-container>
     </div>
   </div>
 </div>
