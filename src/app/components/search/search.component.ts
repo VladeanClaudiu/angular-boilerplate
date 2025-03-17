@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -24,6 +24,9 @@ export class SearchComponent {
   isDropdownOpen = false; //control dropdown visibility
   isMouseDownOutside = false; //check is mouse down happend outisde
   searchLength: String = '';
+
+  // ref to the dropdown container
+  @ViewChild('dropdownContainer') dropdownContainer: ElementRef | undefined;
 
   constructor(private http: HttpClient) {
     this.searchTerm
@@ -60,9 +63,14 @@ export class SearchComponent {
 
   selectAddress(address: { link: { href: string } }) {
     console.log('Selected Address:', address);
-  
+
     const apiUrl = address.link.href; //the API url from the address object
-  
+
+    // Scroll the dropdown container to the top
+    if (this.dropdownContainer) {
+      this.dropdownContainer.nativeElement.scrollTop = 0;
+    }
+
     this.http.get<any>(apiUrl).subscribe(
       (data) => {
         console.log('Data from selected address API call:', data);
@@ -74,21 +82,39 @@ export class SearchComponent {
     );
   }
 
+  processAddress(address: any) {
+    // if the value starts with '<' and remove it
+    let value = address?.value; //the value property from the address object
+    if (value && value.startsWith('<')) {
+      value = value.slice(1); // remove the first character (the '<')
+    }
+
+    //object with both the modified value and the HTML for the new div
+    return {
+      modifiedValue: value,
+      additionalDiv: `<div class="header_back"></div>`,
+    };
+  }
+
+  back() {
+    this.selectAddress(this.addresses?.options?.[0]);
+  }
+
   modifyAddressString(option: string, highlights: [number, number]): string {
     if (!option?.trim()) return '';
-  
+
     const [start, end] = highlights;
-  
+
     // if the highlight range is valid
     if (start < 0 || end > option.length || start >= end) {
       return option; // unchanged if range is invalid
     }
-  
+
     // adding the bold span to the highlighted portion
     const beforeHighlight = option.substring(0, start);
     const highlightedPart = option.substring(start, end);
     const afterHighlight = option.substring(end);
-  
+
     return `${beforeHighlight}<span class="bold">${highlightedPart}</span>${afterHighlight}`;
   }
 
