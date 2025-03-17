@@ -66,7 +66,7 @@ export class SearchComponent {
 
     const apiUrl = address.link.href; //the API url from the address object
 
-    // Scroll the dropdown container to the top
+    //the dropdown container to the top
     if (this.dropdownContainer) {
       this.dropdownContainer.nativeElement.scrollTop = 0;
     }
