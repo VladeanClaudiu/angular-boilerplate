@@ -161,22 +161,20 @@
       }
     }
 
-    /* Custom scrollbar for WebKit browsers (Chrome, Safari, Edge) */
     .dropdown_container::-webkit-scrollbar {
-      width: 12px; /* Adjust scrollbar width */
+      width: 12px; 
       background-color: #fcfcfc;
       border-left: 1px solid #e8e8e8;
       border-right: 1px solid #e8e8e8;
       border-radius: 0px 0px 6px 0px;
     }
 
-    /* Scrollbar thumb (draggable part) */
     .dropdown_container::-webkit-scrollbar-thumb {
       background: #7a7a7a;
       border-radius: 100px;
       transition: background 0.3s;
-      border: 3px solid transparent; /* Creates padding inside scrollbar */
-      background-clip: content-box; /* Ensures thumb stays inside */
+      border: 3px solid transparent; 
+      background-clip: content-box; 
       cursor: pointer;
     }
 
@@ -184,13 +182,11 @@
       background: #555555;
       border-radius: 100px;
       transition: background 0.3s;
-      border: 3px solid transparent; /* Creates padding inside scrollbar */
-      background-clip: content-box; /* Ensures thumb stays inside */
+      border: 3px solid transparent; 
+      background-clip: content-box; 
       cursor: pointer;
     }
 
-    /* Hide scrollbar arrows for WebKit browsers */
-    /* Remove scrollbar arrows in WebKit browsers */
     .dropdown_container::-webkit-scrollbar-button:increment,
     .dropdown_container::-webkit-scrollbar-button:decrement {
       display: none !important;
