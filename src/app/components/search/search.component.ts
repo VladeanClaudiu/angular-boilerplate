@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -12,7 +13,7 @@ import {
 @Component({
   selector: 'app-search',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
 })
@@ -24,6 +25,7 @@ export class SearchComponent {
   isDropdownOpen = false; //control dropdown visibility
   isMouseDownOutside = false; //check is mouse down happend outisde
   searchLength: String = '';
+  searchQuery: string = '';
 
   // ref to the dropdown container
   @ViewChild('dropdownContainer') dropdownContainer: ElementRef | undefined;
@@ -37,21 +39,28 @@ export class SearchComponent {
         tap((data) => console.log('Addresses updated:', data)) // log address when changed
       )
       .subscribe((data) => {
-        console.log(data);
+        // console.log(data);
         this.addresses = data; //store the result of the call
       });
   }
 
+  //filtering for drilldown options
+  get filteredOptions(): any[] {
+    if (!this.addresses?.options) return [];
+    const searchQuery = this.searchQuery.toLowerCase().replace(/\s/g, '');
+    return this.addresses.options.filter((option: any) => {
+      const optionValue = option.value?.toLowerCase().replace(/\s/g, '') || '';
+      return optionValue.includes(searchQuery);
+    });
+  }
+
+
   onKey(event: any) {
-    console.log(this.addresses);
-    console.log('key press');
     this.searchTerm.next(event.target.value); // value change event
-    console.log(this.searchTerm);
     this.searchLength = event.target.value;
   }
 
   fetchAddresses(query: string) {
-    console.log('address fetch');
     if (!query.trim()) {
       //if querry is emty return empty array
       return [];
@@ -77,7 +86,7 @@ export class SearchComponent {
         this.addresses = data; // storing the result of the call
       },
       (error) => {
-        console.error('Error fetching selected address:', error); // erorr handle
+        // console.error('Error fetching selected address:', error); // erorr handle
       }
     );
   }
@@ -94,10 +103,6 @@ export class SearchComponent {
       modifiedValue: value,
       additionalDiv: `<div class="header_back"></div>`,
     };
-  }
-
-  back() {
-    this.selectAddress(this.addresses?.options?.[0]);
   }
 
   modifyAddressString(option: string, highlights: [number, number]): string {
@@ -117,11 +122,24 @@ export class SearchComponent {
 
     return `${beforeHighlight}<span class="bold">${highlightedPart}</span>${afterHighlight}`;
   }
+  
+  //used by the back button when clicked addres is a drilldown
+  back() {
+    this.selectAddress(this.addresses?.options?.[0]);
+    this.searchQuery = ""
+  }
+
+  openDropdown() {
+    this.isDropdownOpen = true;
+    this.searchQuery = ""
+  }
 
   closeDropdown() {
     this.isDropdownOpen = false;
+    this.searchQuery = ""
   }
 
+  // mouse interaction fixes for usecases that may cause issues
   ngOnInit() {
     document.addEventListener('mousedown', this.handleMouseDown.bind(this));
     document.addEventListener('mouseup', this.handleMouseUp.bind(this));
@@ -158,9 +176,5 @@ export class SearchComponent {
 
     // reset variable
     this.isMouseDownOutside = false;
-  }
-
-  openDropdown() {
-    this.isDropdownOpen = true;
   }
 }
