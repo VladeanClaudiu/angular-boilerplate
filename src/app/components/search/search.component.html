@@ -37,7 +37,7 @@
           <div class="drilldown_header">
             <div (click)="back()" class="header_back"></div>
             <div class="header_text">
-              {{ processAddress(addresses?.options?.[0])?.modifiedValue }}
+              {{ processAddress(addresses?.options?.[0]).modifiedValue }}
             </div>
           </div>
           <div class="header_close" (click)="closeDropdown()"></div>
